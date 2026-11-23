@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BALANCE FIFTY // 트레이딩 인텔리전스 대시보드</title>
+<style>
+:root{--bg:#f3f6fb;--pn:#fff;--pn2:#eef2f9;--tx:#0d1b2e;--mu:#5a6b85;--ac:#0a7cff;--ac2:#7a3cff;--up:#e5384f;--dn:#1a6fe0;--bd:#d6dfec;--gl:rgba(10,124,255,.12);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark;--bg:#05080f;--pn:#0c1322;--pn2:#101a2e;--tx:#e6efff;--mu:#8095b5;--ac:#35d0ff;--ac2:#9b6bff;--up:#ff5a6e;--dn:#4d9bff;--bd:#1c2a45;--gl:rgba(53,208,255,.14)}}
+:root[data-theme=dark]{color-scheme:dark;--bg:#05080f;--pn:#0c1322;--pn2:#101a2e;--tx:#e6efff;--mu:#8095b5;--ac:#35d0ff;--ac2:#9b6bff;--up:#ff5a6e;--dn:#4d9bff;--bd:#1c2a45;--gl:rgba(53,208,255,.14)}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.6 "Pretendard","Noto Sans KR",system-ui,sans-serif;background-image:radial-gradient(900px 400px at 85% -10%,var(--gl),transparent),radial-gradient(700px 400px at -10% 10%,rgba(122,60,255,.1),transparent)}
+header{display:flex;align-items:center;gap:14px;padding:10px 16px;border-bottom:1px solid var(--bd);flex-wrap:wrap}
+.logo{font-weight:800;letter-spacing:.18em;background:linear-gradient(90deg,var(--ac),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.tabs{display:flex;gap:6px;margin-left:auto}
+.tabs button,.rg button,.btn{background:var(--pn);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:6px 12px;cursor:pointer;font:inherit}
+.tabs button.on,.rg button.on,.btn.p{background:linear-gradient(90deg,var(--ac),var(--ac2));color:#fff;border-color:transparent}
+.badge{font-size:11px;color:var(--mu);border:1px dashed var(--bd);border-radius:20px;padding:2px 10px}
+.tk{overflow:hidden;border-bottom:1px solid var(--bd);background:var(--pn)}
+.tk div{display:flex;gap:34px;width:max-content;padding:8px 0;animation:mv 40s linear infinite}
+.tk:hover div{animation-play-state:paused}
+@keyframes mv{to{transform:translateX(-50%)}}
+.tk span{white-space:nowrap;font-variant-numeric:tabular-nums}.tk b{margin-right:6px;color:var(--mu);font-weight:600}
+.up{color:var(--up)}.dn{color:var(--dn)}
+main{display:grid;grid-template-columns:290px 1fr;gap:14px;padding:14px;max-width:1500px;margin:auto}
+@media(max-width:900px){main{grid-template-columns:1fr}}
+.card{background:var(--pn);border:1px solid var(--bd);border-radius:14px;padding:14px;box-shadow:0 0 0 1px transparent,0 8px 30px -18px var(--ac)}
+.card h3{margin:0 0 8px;font-size:13px;letter-spacing:.08em;color:var(--ac)}
+input,select,textarea{width:100%;background:var(--pn2);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:7px 10px;font:inherit}
+.wl{max-height:420px;overflow:auto;margin-top:8px}
+.it{display:flex;justify-content:space-between;padding:8px 10px;border-radius:8px;cursor:pointer;border:1px solid transparent}
+.it:hover{background:var(--pn2)}.it.on{border-color:var(--ac);background:var(--gl)}
+.it small{color:var(--mu);display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:14px}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
+.kp div{background:var(--pn2);border-radius:10px;padding:8px 10px}.kp small{color:var(--mu);display:block;font-size:11px}
+.big{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums}
+.rg{display:flex;gap:6px}.rg button{padding:3px 10px}
+svg{width:100%;height:auto;display:block}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;background:var(--gl);color:var(--ac);margin:2px 3px 2px 0}
+.rk li{margin:4px 0}.rk{padding-left:18px;margin:0}
+.bar{height:6px;border-radius:6px;background:var(--pn2);overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2))}
+.mt{padding:10px 0;border-bottom:1px solid var(--bd)}.mt:last-child{border:0}
+.tg{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:12px}
+.pc b{color:#2bb673}.pc .c b{color:var(--up)}
+.note{color:var(--mu);font-size:12px}
+.pc .rw b{color:var(--mu);font-weight:600}.rw{margin:4px 0;font-size:13px}main{max-width:none}#dash{grid-template-columns:300px 1fr;align-items:start}
+aside{position:sticky;top:8px;height:calc(100vh - 110px)}aside .card{height:100%;display:flex;flex-direction:column}
+.wl{flex:1;min-height:0;display:flex;flex-direction:column;max-height:none}.it{flex:1 0 54px;align-items:center}
+.grid{grid-template-columns:repeat(2,1fr)}.kp{grid-template-columns:repeat(4,1fr)}svg{height:260px}path{vector-effect:non-scaling-stroke}
+.tg{grid-template-columns:repeat(3,1fr)}
+.stp{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}.stp div{background:var(--pn2);border-radius:10px;padding:10px}.stp b{color:var(--ac)}.stp p{margin:4px 0 0;font-size:13px}
+.mg{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:10px}.mg .mt{display:block;cursor:pointer;border:1px solid var(--bd)!important;border-radius:10px;padding:10px}
+@media(max-width:1100px){.tg{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}
+@media(max-width:900px){#dash{grid-template-columns:1fr}aside{position:static;height:auto}.wl{max-height:320px}.mg{grid-template-columns:1fr}}
+@media(max-width:700px){.tg{grid-template-columns:1fr}.kp{grid-template-columns:repeat(2,1fr)}}
+.it>div:first-child{flex:1;min-width:0}.it .btn{padding:2px 9px;margin-left:8px}.it .x{opacity:.55}.it:hover .x{opacity:1}#nav{display:grid;grid-template-columns:380px 1fr;align-items:start}#nf{position:sticky;top:8px;max-height:calc(100vh - 110px);overflow:auto}#nf h3{margin-top:14px}
+.chip{display:inline-block;font-size:12px;padding:3px 10px;border-radius:20px;border:1px solid var(--bd);margin:3px 4px 3px 0;cursor:pointer;background:var(--pn2)}.chip.sm{font-size:11px;padding:1px 8px}.chip.on{background:linear-gradient(90deg,var(--ac),var(--ac2));color:#fff;border-color:transparent}
+.rr{display:grid;grid-template-columns:118px 1fr 12px 1fr;gap:6px;align-items:center;margin-top:8px;font-size:13px}.mb{margin-bottom:4px}
+table{width:100%;border-collapse:collapse}th,td{padding:8px 10px;border-bottom:1px solid var(--bd);text-align:left;white-space:nowrap}th{color:var(--mu);font-size:12px}tr[data-go]{cursor:pointer}tr[data-go]:hover{background:var(--pn2)}
+@media(max-width:1000px){#nav{grid-template-columns:1fr}#nf{position:static;max-height:none}}
+#tech{display:block}.hid,#tech.hid,#dash.hid,#nav.hid{display:none}
+dialog{background:var(--pn);color:var(--tx);border:1px solid var(--ac);border-radius:14px;max-width:420px;width:92%}
+dialog label{display:block;margin:6px 0 2px;font-size:12px;color:var(--mu)}
+</style></head><body>
+<header><span class="logo">BALANCE FIFTY</span><span>트레이딩 인텔리전스</span><span class="badge" id="src">SAMPLE DATA · 서버 연결 전</span>
+<nav class="tabs"><button class="on" data-t="dash">대시보드</button><button data-t="nav">종목 네비게이터</button><button data-t="tech">30대 트레이딩 기법</button></nav></header>
+<div class="tk"><div id="tk"></div></div>
+<main id="dash">
+<aside>
+<div class="card"><h3>관심종목 <span id="wc" class="badge">0</span></h3><input id="q" placeholder="종목 검색 후 ＋로 관심 추가 (예: 카카오, TSLA)">
+<div class="wl" id="wl"></div><div class="note" style="margin-top:6px">현재는 샘플 종목만 검색됩니다. 한국·미국 전체 상장종목은 서버 연동 후 제공됩니다.</div><button class="btn" style="width:100%;margin-top:8px" id="add">＋ 종목 수기 입력 (타국가 포함)</button></div>
+</aside>
+<section>
+<div class="card" id="hd"></div>
+<div class="grid" id="cs"></div>
+</section></main>
+<main id="tech" class="hid"><div class="card"><h3>30대 트레이딩 기법 — 장단점 상세</h3><input id="tq" placeholder="기법 검색 (예: 모멘텀, 배당, 회생주, NVDA)" style="margin-bottom:10px"><div class="tg" id="tg"></div><div id="tf"></div></div></main>
+<main id="nav" class="hid"><div class="card" id="nf"></div><div class="card"><h3>검색 결과 <span id="nc" class="badge"></span><select id="ns" style="width:auto;float:right"><option value="">정렬: 기본</option><option value="cap">시가총액 큰순</option><option value="per">PER 낮은순</option><option value="roe">ROE 높은순</option><option value="g">매출성장 높은순</option></select></h3><p class="note">행을 클릭하면 메인 화면에 해당 종목 정보가 표시됩니다.</p><div style="overflow-x:auto"><table id="nt"></table></div></div></main>
+<dialog id="dl"><h3 style="margin-top:0">종목 수기 입력</h3>
+<label>종목명</label><input id="f_n"><label>티커/코드</label><input id="f_s"><label>국가·시장</label><input id="f_m" placeholder="예: JP, CN, EU">
+<label>섹터</label><input id="f_sec"><label>PER (배)</label><input id="f_per" type="number"><label>매출성장률 (%)</label><input id="f_g" type="number">
+<label>연 변동성 (%)</label><input id="f_vol" type="number"><label>6개월 수익률 (%)</label><input id="f_m6" type="number"><label>배당수익률 (%)</label><input id="f_div" type="number">
+<label>규모</label><select id="f_L"><option value="1">대형주</option><option value="0">중소형주</option></select>
+<label>메모(사업·리스크)</label><textarea id="f_ov" rows="3"></textarea>
+<div style="display:flex;gap:8px;margin-top:10px"><button class="btn p" id="ok">추가</button><button class="btn" id="no">취소</button></div></dialog>
+<script>
+const IDX=[["KOSPI","2,610.4",.42],["KOSDAQ","812.7",-.31],["NASDAQ","18,420.1",.88],["S&P 500","5,790.3",.35],["DOW","42,010.8",.12],["NIKKEI","38,900.2",-.2],["USD/KRW","1,372.5",.15],["WTI","71.4",-.6],["US10Y","4.31%",.02]];
+const TAG={t:"추세",v:"저평가",g:"성장",o:"고변동",d:"배당",L:"대형주",S:"중소형주",e:"이벤트",r:"박스권",q:"우량(ROE)"};
+let STK=[
+{s:"005930",n:"삼성전자",m:"KR",sec:"반도체·IT",px:72000,c:.8,cap:"약 430조원",L:1,per:14,pbr:1.2,roe:8,debt:27,div:2,g:8,vol:25,m6:12,ev:1,ov:"메모리·파운드리·모바일·가전을 아우르는 글로벌 종합 전자기업.",biz:"DS(반도체: DRAM·NAND·파운드리), DX(스마트폰·TV·가전), 하만, 디스플레이.",fil:"분기보고서·사업보고서(DART)에서 HBM 투자·시설투자 계획 확인.",vis:"AI 메모리(HBM) 점유율 회복과 파운드리 수율 개선이 핵심 성장축.",rk:["HBM 경쟁력 격차","파운드리 적자 지속","중국 메모리 증설","환율·수출규제"]},
+{s:"000660",n:"SK하이닉스",m:"KR",sec:"반도체",px:185000,c:1.9,cap:"약 135조원",L:1,per:9,pbr:2.3,roe:25,debt:45,div:1,g:60,vol:45,m6:25,ev:1,ov:"DRAM·NAND 전문 반도체 기업, HBM 선도.",biz:"DRAM(HBM 포함), NAND(솔리다임), 서버향 eSSD.",fil:"주요 고객 HBM 공급계약·CAPEX 확대 공시 점검.",vis:"AI 가속기 수요 연동 HBM 사이클 수혜, 고마진 믹스 확대.",rk:["메모리 사이클 반전","특정 고객 의존","대규모 CAPEX 부담","지정학"]},
+{s:"005380",n:"현대차",m:"KR",sec:"자동차",px:240000,c:-.4,cap:"약 50조원",L:1,per:5,pbr:.6,roe:12,debt:90,div:4.5,g:6,vol:28,m6:-3,ev:0,ov:"글로벌 완성차, 제네시스·EV·하이브리드 라인업.",biz:"완성차, 금융(현대캐피탈), 로보틱스·UAM 신사업.",fil:"주주환원(배당·자사주) 정책, 미국 공장 투자 공시.",vis:"하이브리드 믹스·주주환원 확대로 밸류에이션 리레이팅 기대.",rk:["미국 관세·정책","EV 수요 둔화","환율","노사 이슈"]},
+{s:"196170",n:"알테오젠",m:"KR",sec:"바이오",px:380000,c:2.6,cap:"약 20조원",L:0,per:80,pbr:15,roe:20,debt:8,div:0,g:70,vol:60,m6:30,ev:1,ov:"피하주사(SC) 제형 전환 플랫폼 보유 바이오 기술기업.",biz:"히알루로니다제 기반 SC 플랫폼 기술수출·로열티.",fil:"기술이전 계약·임상·특허 공시가 주가 촉매.",vis:"글로벌 빅파마 SC 전환 수요로 로열티 수익 구조화.",rk:["고평가 부담","특허·계약 분쟁","마일스톤 시점 불확실","임상 지연"]},
+{s:"247540",n:"에코프로비엠",m:"KR",sec:"2차전지 소재",px:150000,c:-1.8,cap:"약 14조원",L:0,per:-1,pbr:3.5,roe:-2,debt:120,div:0,g:-10,vol:65,m6:-15,ev:0,ov:"하이니켈 양극재 전문 제조.",biz:"NCA·NCM 양극재, 전구체 일부 내재화.",fil:"공급계약·증설 공시 및 실적 변동성 확인.",vis:"전기차 수요 회복 및 북미 현지화 여부가 관건.",rk:["EV 캐즘","적자·재고","리튬가격","고객사 집중"]},
+{s:"NVDA",n:"NVIDIA",m:"US",sec:"반도체·AI",px:140,c:1.4,cap:"약 3.4조달러",L:1,per:50,pbr:45,roe:90,debt:20,div:.03,g:100,vol:50,m6:20,ev:1,ov:"AI 가속기(GPU) 및 CUDA 소프트웨어 생태계 1위.",biz:"데이터센터 GPU, 네트워킹, 게이밍, 자동차.",fil:"SEC 10-K/10-Q, 분기 실적발표(8-K) 가이던스 확인.",vis:"AI 인프라 투자 지속과 신제품 로드맵이 성장의 핵심.",rk:["고객 CAPEX 둔화","수출규제","경쟁 심화(커스텀칩)","고밸류에이션"]},
+{s:"AAPL",n:"Apple",m:"US",sec:"IT 하드웨어",px:228,c:.5,cap:"약 3.4조달러",L:1,per:33,pbr:50,roe:150,debt:150,div:.5,g:6,vol:22,m6:15,ev:0,ov:"iPhone·서비스·웨어러블 생태계 기업.",biz:"iPhone, Mac/iPad, 서비스(App Store·iCloud), 웨어러블.",fil:"SEC 10-K·10-Q, 자사주 매입 공시.",vis:"서비스 매출 비중 확대와 온디바이스 AI로 교체수요 기대.",rk:["중국 의존","반독점 규제","교체주기 둔화","관세"]}];
+const LYN={A:"자산주",R:"회생주",L:"대형우량주",G:"고성장주",C:"경기순환주",S:"저성장주"};
+const GN=["","1편 가치·펀더멘털","2편 기술적·추세·모멘텀","3편 퀀트·통계 차익","4편 특수상황·공시·매크로","5편 파생·수급 공학"];
+/* [이름,편,린치분류,성향,진입,방법,청산,기대수익,위험,사례,분석도구,보유기간,적합국면] */
+const T=[
+["딥밸류·NCAV(그레이엄)",1,"AR","극보수·역발상(그레이엄, 클라만)","시총≤순유동자산×0.67, PBR≤0.4, 부채비율<50%","청산가치 밑 급락 시 3~5회 균등 분할매수","PBR 0.8~1.0·BPS 수렴 시 매도, 2년 촉매 없으면 교체","연 12~18%","주가 정체 '가치함정'","옥시덴탈(OXY)·버핏","재무제표(B/S)","1~3년","약세장 말기·침체기"],
+["GARP·경제적 해자",1,"LG","균형·안정복리(린치, 멍거)","PEG≤1.0(0.5↓ 적극), 5년 평균 ROE 15%+, 전환비용·네트워크 해자","시장 조정 시 정상 PER 밴드 하단에서 적립 매수","해자 훼손·PEG 2.0↑ 시 분할 매도","연 15~22%","성장 둔화 시 멀티플·실적 동반 하락(더블딥)","알파벳(GOOGL) 2022말","P/E·ROE","2~5년+","전 국면(조정장 유리)"],
+["배당성장·DRIP",1,"SL","극안정·현금흐름(네프, 시겔)","10년+ 연속 증액, FCF 배당성향≤60%, 배당률 역사적 상단","배당락 전후 조정기 분할 매수, 배당 전액 재투자","원칙적 영구 보유, 배당 삭감·중단 공시 시 전량 청산","연 8~12%(MDD 극소)","주가 급락에 배당률만 높아 보이는 '배당 함정'","프록터앤갬블(PG)","현금흐름표(FCF)","영구/5년+","전 국면(하락장 방어)"],
+["마법공식(그린블랫)",1,"LA","계량 가치·규칙 기반","ROC 순위+이익수익률(EBIT/EV) 순위 합산 상위 30종목","매월 균등 분할, 1년에 걸쳐 포트폴리오 완성","52주 경과 시 기계적 매도·리밸런싱","연 15~20%","지수를 2~3년 연속 하회하는 인내 구간","기아(000270)","재무비율(ROC,EY)","1년","전 국면"],
+["고ROIC·FCF 복리 머신",1,"L","퀄리티(테리 스미스, 아크레)","10년 연속 ROIC 20%+, 영업이익 80%+ FCF 전환(자본경량)","공포로 FCF Yield 5%+ 시 집중 매수","자본배분 능력 상실·해자 파괴 전까지 보유","연 16~22%","상시 고PER 밸류 부담","비자(V)","ROIC·FCF","3~10년","우량주 장세"],
+["턴어라운드·구조조정 회생",1,"R","초고위험·초고수익(테퍼, 린치)","대규모 적자 후 사업매각·채무조정 완료, 분기 첫 흑자(BEP)","증자/감자 해소·흑자전환 공시 후 첫 눌림목 분할 매수","정상화 멀티플 도달 시 50~100%+ 차익","비정기 100~300%+","실패 시 상장폐지","HMM(011200)","영업이익 BEP·감자","6개월~2년","경기 회복 초입"],
+["린치 생활밀착 관찰매매",1,"G","직관·상향식(린치, 피셔)","품절·줄서는 매장 포착 후 분기 매출 20%+ 성장 확인","유통망 지역→전국·글로벌 확장 초입 집중 편입","출점 포화·SSSG 성장률 꺾일 때","연 20~30%+(텐배거)","일시 유행(Fad) 오판","삼양식품(003230)","소비 트렌드·SSSG","1~3년","신규 소비 확장기"],
+["CAN SLIM·VCP 돌파",2,"G","공격 모멘텀(오닐, 미너비니)","분기 EPS 25%+, 변동성 20→10→3% 축소 VCP 완성","거래량 100%+ 급증하며 피봇 저항 돌파 시 매수","-7~8% 칼손절, 20~25% 분할익절, 50일선 이탈 전량","연 30~50%+","횡보장 거짓 돌파(Whipsaw) 잦은 손절","엔비디아(NVDA) 2024초","차트+분기 실적","수주~수개월","대세 상승장 주도 국면"],
+["기준봉 눌림목 스윙",2,"CG","단기 스윙·적극 트레이딩","거래대금 5~10배·15%+ 기준봉 후 2~4일 거래량 70%↓","기준봉 50% 또는 10/20일선 지지 캔들 확인 분할","전고점 5~10% 익절, 지지(-3%)·기준봉 시가 이탈 손절","월 5~15%(고회전)","2~3등주 적용 시 반등 실패 급락","한미반도체(042700)","캔들+거래량","2일~5일","유동성 장세·테마 순환"],
+["볼밴 하단·RSI 다이버전스",2,"CL","과매도 반등(볼린저, 코너스)","볼밴 하단(2σ) 이탈, RSI(14)≤30 + 다이버전스","5일선 회복 양봉 시 2~3회 분할 매수","20일선/상단선 익절, 전저점 이탈 손절","월 4~8%","강한 하락추세 밴드워킹","삼성전자(005930)","보조지표·다이버전스","5~15일","과매도 투매 구간"],
+["이평선 정배열 추세추종",2,"GL","정석 추세 편승(와인스타인)","20>60>120>200일선 정렬된 2단계 상승 국면","20/50일선 지지 확인 시 분할 매수","20일선 이탈 50% 익절, 60일선(10주선) 이탈 전량","연 20~35%","늦게 팔아 최고점 대비 일부 수익 반납","애플(AAPL)","이동평균선","수개월~1년","대세 상승장"],
+["추세반전·갭필(Gap-Fill)",2,"L","단기 반등·가격 왜곡(윌리엄스)","노이즈성 5~10% 갭하락, 펀더멘털 손상 없음","개장 30분 내 시가 회복 양봉 시 매수","전일 종가(갭 상단) 도달 시 전량(1~2일)","회당 4~7%","실적쇼크 등 구조적 결함 시 추가 투매","테슬라(TSLA)","캔들 갭·시가 지지","수시간~2일","과민반응 갭하락"],
+["스캘핑·호가창 체결강도","2","","초단기 감각·고도 집중(프랍 데스크)","거래대금 1~10위, 매도잔량 2배+, 체결강도 120%+","1·3분봉 시가/VI 후 지지 유지 시 시장가 진입","1~3% 익절, 매수벽 붕괴 -1% 기계적 손절","편차 극심","피로·뇌동매매·수수료/세금 누적","거래대금 5천억+ 주도주","호가창·체결강도","수초~수십분","변동성 장세"],
+["S/R 플립·돌파 리테스트",2,"GC","균형 프라이스액션(알 브룩스)","전고점을 장대양봉 돌파 후 저항→지지 전환 확인","리테스트 거래량 급감·아래꼬리 반등 캔들에 매수","새 파동 분할 익절, 지지 하향 이탈 즉시 손절","연 25~40%","리테스트 없이 급등 시 진입 상실(FOMO)","SK하이닉스(000660)","지지·저항·거래량","1주~1개월","박스권 돌파 후"],
+["다중 타임프레임(삼중창)",2,"LG","전략 프레임워크(엘더)","주봉 MACD↑ → 일봉 RSI 과매도 해소 → 60분봉 저항 돌파","상위 추세 방향으로만 하위 프레임 진입","일봉 과열 분할 매도, 주봉 추세 꺾이면 전량","연 20~30%","3프레임 일치 신호 빈도 낮음","마이크로소프트(MSFT)","삼중창(주/일/분)","수일~수주","추세장 눌림목"],
+["슈퍼트렌드·ATR 트레일링",2,"G","기계적 추세 홀딩(터틀)","ATR 슈퍼트렌드가 매수(녹색)로 전환","손절선(종가-3×ATR)을 매일 상향 조정","트레일링 스탑 하향 터치 시 시장가 전량","연 20~35%","횡보장 진입·청산 엇갈려 잦은 손실","팔란티어(PLTR)","ATR 변동성 지표","수주~수개월","강한 모멘텀 랠리"],
+["페어 트레이딩",3,"CL","시장 중립(시타델, 르네상스)","유사 종목 가격비 스프레드 2σ 이탈","과매도 롱 + 과매수 숏","스프레드 평균(μ) 회귀 시 동시 청산","연 8~14%(절대수익)","펀더멘털 결함 시 스프레드 영구 발산","SK이노베이션 vs S-Oil","통계 스프레드(2σ)","수주~2개월","박스권 횡보장"],
+["12-1M 모멘텀 팩터",3,"GL","계량·감정 배제(애스니스, AQR)","최근 12개월(직전 1개월 제외) 상대강도 상위 10%","매월/분기 동일가중 분할 매수","리밸런싱 시 순위 밖이면 기계적 전량 매도","연 15~22%","변곡점 주도주 급락 시 팩터 크래시","브로드컴(AVGO)","상대강도(RS) 순위","1~3개월","강세장 추세 지속"],
+["200일선 평균회귀 스윙",3,"L","통계 안정·역발상(소프, 코너스)","200일선 위, 2~3일 급락 20일선 괴리 -8%↓ & RSI(2)≤10","마감 동시호가/익일 시가 분할 매수","5일선·20일선 회복 시 전량(보유 3~5일)","연 12~18%(승률 70%+)","대세 하락장 전환 시 200일선 붕괴","마이크로소프트(MSFT)","200일선+RSI(2)","3~5일","상승 추세 중 단기 눌림"],
+["멀티팩터(파마-프렌치)",3,"LA","정량 자산배분","밸류·퀄리티·모멘텀·로우볼 Z-Score 상위 50종목","반기/연 1회 동일가중 정기 리밸런싱","점수 하락 종목 매도, 신규 편입","연 14~18%","테마 폭등기 단기 시장 수익률 하회","코스트코(COST)","밸류/퀄리티/모멘텀","6개월~1년","전 국면(자산배분)"],
+["로우볼·고배당 인컴",3,"SL","위험 회피·자본 보존","베타≤0.7, 3년 변동성 하위 20%, 배당 4%+","변동성 확대 국면 동일비중, 분기 리밸런싱","배당 누적 수취, 리레이팅 시 비중 유지 매도","연 9~13%(MDD 지수 절반)","강한 유동성 장세 소외","유한양행(000100)","저변동성+고배당","1년+","약세장·횡보장"],
+["NLP 뉴스 센티먼트",3,"","초단기 데이터 드리븐(Two Sigma)","뉴스·SNS 감성 점수 임계치 돌파 종목","송고 후 1초~1분 내 알고리즘 자동 매수","감성 피크(10분~당일 마감 전) 전량 청산","변동성 극대","가짜뉴스·오보·API 레이턴시","대형 수주·FDA 승인 단독 보도","뉴스 텍스트 마이닝","수분~수시간","뉴스 돌발 장세"],
+["M&A·공개매수 차익",4,"AR","절대수익·리스크 아비트라지","공시 매수가격과 현재가 간 확정 스프레드 3~8%","주총·반독점 승인 확률 계산 후 진입","공개매수 청약 매각 또는 합병 기일 교환","건당 3~8%(연 15~25%+)","규제 불허 시 딜 파기 급락","액티비전(ATVI)","공시 스프레드·규제","1~3개월","무관(독립 이벤트)"],
+["주주행동주의 추종",4,"AR","촉매 추종·알파(아이칸, 애크먼)","행동주의 펀드 5%+ 지분 공시, 소각·배당·이사회 요구","공시 직후 펀드 평균단가 대비 10% 이내 동반 매수","표대결 승리·주주환원 공식 발표 시 매도","연 20~40%+","분쟁 장기화·펀드 엑시트 시 원상 복귀","에스엠(041510)","5% 지분 공시·주총","3개월~1년","지배구조 개편 이슈"],
+["내부자 대량 매수 추종",4,"RA","정보 비대칭 활용(린치)","CEO·CFO 등 2인+ 사재 장내매수, 연봉 대비 유의미","장기 바닥권·내부자 매수가 ±5% 이내 매수","6개월~1년 턴어라운드 실적 후 전고점 분할 매도","연 15~25%","주가 방어용 소액 '쇼잉' 매수","에스오일(010950)","임원 사재매수 공시","6개월~1년","업황 바닥 국면"],
+["어닝 서프라이즈(PEAD)",4,"G","실적 모멘텀·기관 편승(버나드)","영업이익 컨센 20%+ 상회, 연간 가이던스 상향","발표일 갭상승 후 2~3일 기관 순매수·시가 지지 시 매수","30~60일 목표주가 상향 후 다음 실적 전 매도","분기 10~20%","일회성 영업외이익 서프라이즈 착시","현대엘리베이터(017800)","실적 vs 컨센서스","1~2개월","어닝 시즌"],
+["거시경제 탑다운 순환매",4,"C","자산배분·사이클 추종(소로스, 달리오)","금리·인플레·M2·달러로 경기 4계절 진단","인하기 성장주/빅테크, 인플레기 원자재·에너지·금융 교체","통화정책 전환·경기선행지수 꺾임 시 섹터 청산","연 15~25%+","정책 시차(Lag)로 예측-반응 괴리","프리포트맥모란(FCX)","거시지표·금리","6개월~2년","경기 사이클 변곡점"],
+["커버드콜·휠 전략",5,"L","현금 인컴·방어적 박스권","우량주 매수 또는 OTM 풋 매도(Cash-Secured Put)","OTM 3~5% 콜을 30~45일 만기로 매월 매도","횡보 시 프리미엄 100% 수취, 급등 시 행사가 인도","연 10~18%","급등 시 상방 제한, 폭락 시 하방 노출","애플(AAPL)","옵션 프리미엄·행사가","매월 리밸런싱","완만한 상승·횡보장"],
+["숏스퀴즈·대차잔고 청산",5,"R","초고위험·초고수익 모멘텀","공매도 잔고율≥20%, 대차수수료 폭등","거래량 동반 예상 밖 호재 시 숏커버링 노려 돌파 매수","거래량 사상 최대·포물선 폭등 시 분할 전량","단기 50~200%+","스퀴즈 종료 후 반토막 이하 폭락","게임스탑(GME)","공매도 잔고율·대차비","수일~수주","유동성 폭발 국면"],
+["지수 리밸런싱 수급 선취매",5,"LG","계량 수급·무위험 추구","MSCI·FTSE·코스피200 편입 조건(시총·유동비율) 충족","공식 발표 1~2개월 전 선취매","정기 변경일 동시호가에 전량 매도","연 10~18%(높은 승률)","정보 선반영 시 발표 직후 하락","에코프로머티(450080)","패시브 편입 조건","1~2개월","정기 변경 시즌"]];
+const C=["무리한 인수 후 유가 급락 충격으로 주가가 폭락했으나, 버핏은 퍼미안 분지 핵심 유전의 순자산 가치와 FCF 창출력을 확인하고 $50 초반 밴드에서 대량 매집해 본질가치 회복과 배당을 확보했습니다.",
+"2022년 말 생성형 AI 위협과 광고 침체 우려로 선행 PER이 15~17배, PEG가 0.8~0.9까지 하락한 시점에 강력한 매수 타점이 형성됐고, 본업 회복과 함께 역사적 신고가로 수렴했습니다.",
+"필수소비재 가격 결정력으로 60년 이상 배당을 증액. 원자재 인플레 충격으로 주가가 하락해 배당수익률이 3%에 근접할 때 매수하고 DRIP을 집행해 하방 방어와 자산 증식을 달성했습니다.",
+"고마진 레저용 차량(RV) 확대로 압도적인 ROC를 기록했음에도 전통 완성차 디스카운트로 극단적 저PER(높은 EBIT/EV)이 유지되어 마법공식 최상단에 장기간 노출된 뒤 실적과 주가가 동반 급등했습니다.",
+"결제 네트워크 구축 후 추가 대규모 투자 없이 거래 수수료를 현금으로 회수하는 독점 구조. 규제 이슈로 조정받을 때마다 고ROIC 기반의 주가 복리 우상향을 입증했습니다.",
+"채권단 관리 체제에서 초대형 컨테이너선 투입과 글로벌 운임(SCFI) 급등이 맞물려 분기 흑자전환이 달성된 시점부터 정상화 멀티플을 반영하며 20배 이상의 회생 랠리를 시현했습니다.",
+"해외 SNS 불닭볶음면 열풍과 현지 유통망 입점 확대를 일상에서 관찰하고, 관세청 수출 데이터 급증을 숫자로 확인한 투자자들이 초기에 편입해 수배 이상의 텐배거 수익을 냈습니다.",
+"2023년 하반기 $400~$500 박스권에서 변동성을 3차례 줄이는 VCP 패턴을 완성한 뒤, 2024년 초 기관 거래량과 함께 $500 저항을 돌파하는 피봇 포인트에서 2배 이상 추가 랠리를 전개했습니다.",
+"AI HBM 핵심 장비 수주 모멘텀으로 거래대금을 동반한 상한가 기준봉을 형성한 뒤, 3일간 거래량이 1/4로 줄며 5일선 지지를 확인하는 눌림목 타점에서 15~20% 반등 파동이 출현했습니다.",
+"반도체 다운사이클과 외국인 매도로 볼린저밴드 하단을 이탈하며 신저가를 냈으나, 주봉·일봉 RSI가 저점을 높이는 다이버전스를 형성한 뒤 20일선까지 10~15% 기술적 반등을 이뤘습니다.",
+"주요 강세장 사이클에서 50일 이동평균선을 깨지 않고 수년간 정배열을 유지하며, 눌림목마다 안정적인 매수 기회를 지속 제공했습니다.",
+"인도량이 소폭 하회해 장 시작 -6% 갭하락 출발했으나 개장 30분 만에 시가를 회복하고, 당일 장중 전일 종가 갭을 100% 메우며 기술적 반등을 완성했습니다.",
+"오전 9~10시 대형 수주 공시로 거래대금이 폭증할 때, 1분봉 지지선과 두터운 매도호가를 뚫어내는 체결강도를 활용해 수분 내 차익을 확정하는 형태입니다.",
+"과거 15만 원 박스권 상단 저항을 돌파한 후 눌림을 주며 15만 원 선이 강력한 지지선으로 전환되는 리테스트를 거친 뒤, 20만 원을 향한 2차 랠리를 전개했습니다.",
+"주봉 추세가 견고한 우상향인 상태에서 일봉 조정 파동의 과매도 끝자락을 분봉 돌파로 잡아내 거짓 신호를 완전히 필터링했습니다.",
+"강한 모멘텀 구간에서 슈퍼트렌드가 매수로 전환된 후 지표선을 깨지 않고 수개월간 지속 상승, 고점 예단 없이 추세를 끝까지 누렸습니다.",
+"동일한 정제마진 사이클을 공유하지만 비정유 사업부 노이즈로 SK이노베이션이 과도하게 하락해 스프레드가 벌어졌을 때, 롱숏 포지션으로 평균 회귀 차익을 도출했습니다.",
+"개별 사업 분석과 무관하게 12-1M 상대강도 최상위 점수를 수년간 유지하며 퀀트 포트폴리오에 지속 편입되어 주가 추세를 향유했습니다.",
+"200일선 위 우상향 중 단기 지정학 노이즈로 4일 연속 음봉을 그려 괴리율이 벌어졌을 때 진입, 3영업일 만에 20일선으로 평균 회귀하며 6% 수익을 확정했습니다.",
+"높은 ROE(퀄리티), 견고한 추세(모멘텀), 낮은 변동성(로우볼) 점수를 장기 유지하며 멀티팩터 포트폴리오의 코어로 시장 지수를 지속 압도했습니다.",
+"안정적인 의약품 매출과 낮은 베타를 바탕으로 지수 급락장에서도 변동성을 효과적으로 방어하며 배당과 파이프라인 가치를 지켜냈습니다.",
+"대형 수주 공시나 FDA 승인 단독 기사가 뜨는 즉시 알고리즘이 매수세를 집중시켜 VI로 직행하는 패턴입니다.",
+"MSFT의 $95 인수 제안 후 FTC 반독점 소송으로 $75까지 하락했으나, 승인을 확신한 버핏이 매집해 인수 종결과 함께 $95에 전량 차익을 실현했습니다.",
+"얼라인파트너스의 지배구조 개선 요구 공시 이후 경영권 분쟁과 하이브·카카오의 대규모 인수전·공개매수가 이어지며 단기간에 주가가 2배 이상 폭등했습니다.",
+"정제마진 최악 국면에서 경영진이 일제히 책임경영 장내 매수 공시를 낸 후, 사이클 반등과 함께 실적이 흑자 전환되며 주가가 강하게 우상향했습니다.",
+"컨센서스를 대폭 상회하는 영업이익 발표 직후 당일 갭상승 이후에도 기관의 지속적 매수세(PEAD)가 2달간 이어져 안정적 추세 수익을 안겼습니다.",
+"글로벌 통화 완화와 인프라·AI 전력망 투자로 구리 슈퍼사이클 초입이 확인되던 시점, 선물 가격 상승 추세에 맞춰 선제 진입해 수년간 5배의 사이클 수익을 달성했습니다.",
+"주가가 박스권에서 등락할 때 주식을 보유하면서 5% 외가격 콜옵션을 매월 매도해, 배당 외에 연 8~10% 수준의 옵션 프리미엄을 지속 확보했습니다.",
+"공매도 비율이 유통주식수의 100%를 초과한 상황에서 개인 매수세가 유입되자 공매도 헤지펀드의 강제 청산이 꼬리를 물며 단기간 주가가 수십 배 폭등했습니다.",
+"코스피200 및 MSCI 지수 특례 편입 조건을 충족하며, 패시브 추종 자금 유입 기대감으로 정기 변경일까지 기관 매수세가 집중되어 주가가 강하게 상승했습니다."];
+let chk=new Set();
+function manual(i,s){const t=T[i],g=t[1],px=s.px,R=v=>(s.m==="KR"?"₩":s.m==="US"?"$":"")+Number(s.m==="US"?v.toFixed(2):Math.round(v/10)*10).toLocaleString();
+const pm=["","계획 비중을 3~5회로 나눠 매수하고 종목당 총자산의 10~15% 이내로 제한합니다. 분기 재무제표로 투자 근거(재무·해자)가 유지되는지 점검합니다.","1회 거래 손실 한도를 총자산의 1~2%로 두고, 수량 = (총자산×1%) ÷ (진입가−손절가)로 계산합니다."+(px?` 현재가 ${R(px)} 기준 -7% 손절가는 ${R(px*.93)}입니다.`:""),"동일가중·정기 리밸런싱 규칙을 사전에 정하고 종목당 비중을 5% 이내로 분산합니다.","이벤트 1건당 총자산의 2~5% 이내로 제한하고, 재료 무산·딜 파기 시나리오의 손실 한도를 미리 정합니다.","옵션은 보유주식 100주당 1계약으로 관리하고, 수급·이벤트형은 총자산 5% 이내로 제한합니다."];
+const st=[["① 종목 스크리닝",t[4]+` / 현재 종목: PER ${s.per>0?s.per+"배":"NA"}, 6개월 ${s.m6}%, 변동성 ${s.vol}%`+(s.roe!=null?`, ROE ${s.roe}%`:"")],["② 진입 실행",t[5]],["③ 포지션·자금관리",pm[g]],["④ 청산 규칙",t[6]+(g==2&&px?` · 예시 레벨: 손절 ${R(px*.93)}, 1차 익절 ${R(px*1.2)}~${R(px*1.25)}`:"")],["⑤ 사후 점검",`위험 요인: ${t[8]}. 예상 보유기간 ${t[11]}, 적합 국면(${t[12]})을 벗어나면 비중을 줄이고 재평가하며 모든 매매를 일지에 기록합니다.`]];
+return `<div class="card" style="margin-top:12px"><h3>📋 ${esc(t[0])} — 트레이딩 단계 매뉴얼</h3><div class="stp">${st.map(x=>`<div><b>${x[0]}</b><p>${esc(x[1])}</p></div>`).join("")}</div></div>`}
+function mnlHtml(s){const ids=techMatch(s).map(m=>m.i);return [...chk].filter(i=>ids.includes(i)).map(i=>manual(i,s)).join("")||'<p class="note">▶ 기법을 체크하면 단계별 트레이딩 매뉴얼이 이 아래에 표시됩니다 (교육용 참고).</p>'}
+const $=i=>document.getElementById(i),esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fm=(v,m)=>(m==="KR"?"₩":m==="US"?"$":"")+v.toLocaleString();
+try{const x=JSON.parse(localStorage.getItem("ae_custom")||"[]");STK=STK.concat(x)}catch(e){}
+let WL=STK.map(x=>x.s);try{const w=JSON.parse(localStorage.getItem("ae_wl")||"null");if(Array.isArray(w))WL=w}catch(e){}
+function saveWL(){try{localStorage.setItem("ae_wl",JSON.stringify(WL))}catch(e){}}
+const LITE="네이버|035420|KR|IT 플랫폼;카카오|035720|KR|IT 플랫폼;LG에너지솔루션|373220|KR|2차전지;셀트리온|068270|KR|바이오;삼성바이오로직스|207940|KR|바이오;POSCO홀딩스|005490|KR|철강;기아|000270|KR|자동차;한미반도체|042700|KR|반도체 장비;KB금융|105560|KR|금융;HD현대중공업|329180|KR|조선;Microsoft|MSFT|US|소프트웨어;Alphabet|GOOGL|US|인터넷;Amazon|AMZN|US|이커머스;Meta|META|US|인터넷;Tesla|TSLA|US|자동차;Broadcom|AVGO|US|반도체;Costco|COST|US|유통;Palantir|PLTR|US|소프트웨어;Visa|V|US|결제;Exxon Mobil|XOM|US|에너지;JPMorgan|JPM|US|금융".split(";").map(x=>{const[a,b,c,d]=x.split("|");return{s:b,n:a,m:c,sec:d,px:0,c:0,cap:"-",L:0,per:0,g:0,vol:0,m6:0,div:0,ov:"기업 정보 미연동 — 서버 연결 후 자동 채움 또는 수기 입력",rk:[],lite:1}}).filter(x=>!STK.some(y=>y.s===x.s));
+STK=STK.concat(LITE);let cur=STK[0],rg=66;
+$("tk").innerHTML=[...IDX,...IDX].map(i=>`<span><b>${i[0]}</b>${i[1]} <em class="${i[2]>=0?"up":"dn"}" style="font-style:normal">${i[2]>=0?"▲":"▼"}${Math.abs(i[2])}%</em></span>`).join("");
+function tagsOf(s){const t=[];if(s.per>0&&s.per<13)t.push("v");if(s.g>=15)t.push("g");if(s.vol>=35)t.push("o");if(s.m6>=10)t.push("t");if(s.div>=2.5)t.push("d");t.push(s.L?"L":"S");if(s.ev)t.push("e");if(s.roe>=12)t.push("q");if(s.m6<10&&s.vol<35)t.push("r");return t}
+function series(s,n){let h=0;for(const ch of s.s)h=(h*31+ch.charCodeAt(0))>>>0;const r=()=>(h=(h*1664525+1013904223)>>>0)/4294967296;const dv=s.vol/100/16,mu=s.m6/100/125;let p=[100];for(let i=1;i<n;i++)p.push(p[i-1]*(1+mu+(r()-.5)*2*dv));const k=s.px/p[n-1];return p.map(v=>v*k)}
+function chart(s){if(!s.px)return '<p class="note" style="padding:70px 0;text-align:center">시세 미연동 종목 — 서버 연결 후 차트가 표시됩니다.</p>';const p=series(s,rg),W=600,H=200,mn=Math.min(...p),mx=Math.max(...p),X=i=>i/(p.length-1)*W,Y=v=>H-10-(v-mn)/(mx-mn||1)*(H-20);const d=p.map((v,i)=>(i?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1)).join("");const up=p[p.length-1]>=p[0];const col=up?"var(--up)":"var(--dn)";return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".35"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs><path d="${d}L${W} ${H}L0 ${H}Z" fill="url(#g)"/><path d="${d}" fill="none" stroke="${col}" stroke-width="2"/></svg>`}
+function row(s,i,sr){const w=WL.includes(s.s);return `<div class="it ${s===cur?"on":""}" data-i="${i}"><div>${esc(s.n)}<small>${esc(s.s)} · ${esc(s.m)} · ${esc(s.sec)}</small>${lyOf(s).length?`<small style="color:var(--ac)">${lyOf(s).map(x=>LYN[x]).join(" · ")}</small>`:""}</div><div style="text-align:right">${s.px?`<span class="${s.c>=0?"up":"dn"}">${fm(s.px,s.m)}<small>${s.c>=0?"+":""}${s.c}%</small></span>`:'<small>시세 미연동</small>'}</div>${sr?(w?'<span class="note" style="margin-left:8px">✔관심</span>':`<button class="btn" data-add="${i}" title="관심종목 추가">＋</button>`):`<button class="btn x" data-del="${i}" title="관심종목에서 삭제">✕</button>`}</div>`}
+function list(){const q=$("q").value.trim().toLowerCase();let h;if(q){const r=STK.map((x,i)=>({x,i})).filter(o=>(o.x.n+o.x.s+o.x.m+o.x.sec).toLowerCase().includes(q));h=r.length?`<div class="note" style="padding:2px 6px">검색 결과 ${r.length}건 · ＋로 관심종목에 추가</div>`+r.map(o=>row(o.x,o.i,1)).join(""):'<p class="note">검색 결과가 없습니다. 아래 \'수기 입력\'으로 직접 추가하세요.</p>'}else{h=WL.map(k=>STK.findIndex(x=>x.s===k)).filter(i=>i>=0).map(i=>row(STK[i],i,0)).join("")||'<p class="note">관심종목이 비어 있습니다. 위 검색창에서 종목을 검색해 추가하세요.</p>'}$("wl").innerHTML=h;$("wc").textContent=WL.length}
+function render(){const s=cur,tg=tagsOf(s);
+$("hd").innerHTML=`<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px"><div><h2 style="margin:0">${esc(s.n)} <small class="note">${esc(s.s)} · ${esc(s.m)}</small></h2>${LYB(s)}<div class="big ${s.c>=0?"up":"dn"}">${s.px?fm(s.px,s.m):"-"} <small style="font-size:14px">${s.c>=0?"▲":"▼"}${Math.abs(s.c)}%</small></div></div><div class="rg">${[["1M",22],["3M",66],["1Y",250]].map(r=>`<button data-r="${r[1]}" class="${rg===r[1]?"on":""}">${r[0]}</button>`).join("")}</div></div>${chart(s)}<div class="note">차트는 샘플 시뮬레이션입니다 (서버 연결 시 실제 시세로 교체).</div>`;
+const mt=techMatch(s);
+$("cs").innerHTML=`<div class="card"><h3>기업 개요</h3><p>${esc(s.ov)}</p><h3>주요 사업 상세</h3><p>${esc(s.biz||"-")}</p>${lyOf(s).map(x=>`<span class="tag">${LYN[x]}</span>`).join("")}${tg.map(t=>`<span class="tag">${TAG[t]}</span>`).join("")}</div>
+<div class="card"><h3>재무·밸류에이션</h3><div class="kp">${[["시가총액",s.cap||"-"],["PER",s.per>0?s.per+"배":"적자/NA"],["PBR",s.pbr!=null?s.pbr+"배":"-"],["ROE",s.roe!=null?s.roe+"%":"-"],["부채비율",s.debt!=null?s.debt+"%":"-"],["배당률",s.lite?"-":s.div+"%"],["매출성장",s.lite?"-":s.g+"%"],["연변동성",s.lite?"-":s.vol+"%"]].map(k=>`<div><small>${k[0]}</small>${esc(k[1])}</div>`).join("")}</div></div>
+<div class="card"><h3>공시정보 & 비전 분석</h3><p><b>공시 체크:</b> ${esc(s.fil||"DART/EDGAR에서 직접 확인")}</p><p><b>비전:</b> ${esc(s.vis||"수기 입력 정보 기반")}</p></div>
+<div class="card"><h3>⚠ 크리티컬 체크포인트 (리스크)</h3><ul class="rk">${(s.rk&&s.rk.length?s.rk:["수기 입력 종목: 리스크를 메모에 기록하세요"]).map(r=>`<li>${esc(r)}</li>`).join("")}</ul></div>
+<div class="card" style="grid-column:1/-1"><h3>적합 트레이딩 기법 TOP 6 (기업 정보 매칭)</h3>${s.lite?'<p class="note">⚠ 기업 정보가 아직 없어 기법 매칭이 제한됩니다. 서버 연동 또는 수기 입력으로 데이터를 채우세요.</p>':""}<div class="mg">${mt.map(m=>`<label class="mt"><div style="display:flex;justify-content:space-between;gap:8px"><span><input type="checkbox" data-m="${m.i}" ${chk.has(m.i)?"checked":""}> <b>${esc(m.t[0])}</b></span><span>${m.p}%</span></div><div class="bar"><i style="width:${m.p}%"></i></div><div class="note">일치: ${esc(m.h.join(", "))}</div><div class="note">진입: ${esc(m.t[4])} · 주의: ${esc(m.t[8])}</div></label>`).join("")}</div><div id="mnl">${mnlHtml(s)}</div><p class="note">규칙 기반 참고용 매칭이며 투자 권유가 아닙니다.</p></div>`}
+function lyOf(s){const a=[];if(s.lite)return a;if(s.g>=20)a.push("G");if(s.per<0||(s.m6<-10&&s.g<0))a.push("R");if(/반도체|자동차|2차전지|화학|철강|해운/.test(s.sec))a.push("C");if(s.div>=2.5&&s.g<10)a.push("S");if(s.pbr<1)a.push("A");if(s.L)a.push("L");return a}
+function techMatch(s){const ly=lyOf(s),v=(s.per>0&&s.per<13)||s.pbr<1;return T.map((t,i)=>{const sh=[...t[2]].filter(x=>ly.includes(x));let p=0,h=[];if(sh.length){p+=40+10*(sh.length-1);h.push("린치분류 "+sh.map(x=>LYN[x]).join("·"))}const g=t[1];if(g==1&&(v||s.roe>=15)){p+=30;h.push(v?"저평가 지표":"고ROE")}if(g==2&&(s.m6>=10||s.vol>=35)){p+=30;h.push(s.m6>=10?"상승 추세":"높은 변동성")}if(g==3&&s.L){p+=15;h.push("대형주 유동성")}if(g==4&&s.ev){p+=30;h.push("이벤트 촉매")}if(g==5&&s.L){p+=10;h.push("대형주")}if(!t[2]&&s.vol>=35){p+=40;h.push("높은 변동성")}return{t,i,h,p:Math.min(p,100)}}).filter(m=>m.p>0).sort((a,b)=>b.p-a.p).slice(0,6)}
+function techs(){const q=$("tq").value.toLowerCase();$("tg").innerHTML=T.map((t,i)=>({t,i})).filter(o=>o.t.join(" ").toLowerCase().includes(q)).map(o=>{const t=o.t;return `<div class="card pc"><h3>${String(o.i+1).padStart(2,"0")}. ${esc(t[0])}</h3><span class="tag">${GN[t[1]]}</span>${[...t[2]].map(x=>`<span class="tag">${LYN[x]}</span>`).join("")}<div class="rw"><b>성향</b> ${esc(t[3])}</div><div class="rw"><b>진입</b> ${esc(t[4])}</div><div class="rw"><b>방법</b> ${esc(t[5])}</div><div class="rw"><b>청산</b> ${esc(t[6])}</div><div class="rw"><b>✔ 장점·기대</b> <span style="color:#2bb673">${esc(t[7])}</span> · 적합국면 ${esc(t[12])}</div><div class="rw"><b>✖ 단점·위험</b> <span style="color:var(--up)">${esc(t[8])}</span></div><div class="rw"><b>분석도구</b> ${esc(t[10])} · <b>보유</b> ${esc(t[11])}</div><div class="rw" style="background:var(--pn2);border-radius:10px;padding:8px 10px"><b>실전 사례 · ${esc(t[9])}</b><br>${esc(C[o.i])}</div></div>`}).join("");
+$("tf").innerHTML=`<div class="tg" style="margin-top:14px"><div class="card pc"><h3>긍정적 투자 형태</h3><div class="rw">· 시간 지평과 지표 일치: 장기형(01~07)은 ROIC·FCF·배당증액률, 단기형(08~16)은 거래량·지지저항·손절 기준만 모니터링</div><div class="rw">· 비대칭 손익비: 승률 40~50%여도 -7% 내 손절, 25~50%+ 길게 보유</div><div class="rw">· 공시(DART)·분기 EPS·확정 수급 등 검증된 숫자 기반 타점</div></div><div class="card pc"><h3>부정적 투자 형태</h3><div class="rw">· 단기 매매의 비자발적 장기투자화(-20~30% 물리고 가치투자로 둔갑)</div><div class="rw">· 저평가 착시(Value Trap)와 맹목적 물타기: 영업현금흐름 마이너스 부실 기업</div><div class="rw">· 진입·매도 기준 괴리: 고점 뇌동 추격 후 눌림 구간 패닉셀 반복</div></div></div>`}
+document.addEventListener("click",e=>{const ad=e.target.closest("[data-add]"),dl=e.target.closest("[data-del]"),a=(ad||dl)?null:e.target.closest("[data-i]"),b=e.target.closest("[data-r]"),t=e.target.closest("[data-t]");
+if(ad){const x=STK[+ad.dataset.add];if(!WL.includes(x.s))WL.push(x.s);saveWL();cur=x;list();render()}if(dl){const x=STK[+dl.dataset.del];WL=WL.filter(k=>k!==x.s);saveWL();if(cur===x){const f=STK.find(y=>WL.includes(y.s));if(f)cur=f}list();render()}if(a){cur=STK[+a.dataset.i];list();render()}if(b){rg=+b.dataset.r;render()}
+if(t){go(t.dataset.t)}});
+document.addEventListener("change",e=>{const c=e.target.closest("[data-m]");if(c){const i=+c.dataset.m;c.checked?chk.add(i):chk.delete(i);$("mnl").innerHTML=mnlHtml(cur)}});$("q").oninput=list;$("tq").oninput=techs;$("add").onclick=()=>$("dl").showModal();$("no").onclick=()=>$("dl").close();
+$("ok").onclick=()=>{const v=i=>$("f_"+i).value,n=x=>parseFloat(v(x))||0;if(!v("n"))return;const s={s:v("s")||v("n"),n:v("n"),m:v("m")||"ETC",sec:v("sec")||"-",px:0,c:0,cap:"-",L:v("L")==="1",per:n("per"),g:n("g"),vol:n("vol"),m6:n("m6"),div:n("div"),ov:v("ov")||"수기 입력 종목",roe:null,ev:0,rk:[],custom:1};s.L=v("L")==="1"?1:0;STK.push(s);WL.push(s.s);saveWL();try{localStorage.setItem("ae_custom",JSON.stringify(STK.filter(x=>x.custom)))}catch(e){}$("dl").close();cur=s;list();render()};
+/* 서버 연결 어댑터: DATA_URL에 JSON(/api/stocks)을 지정하면 STK를 교체하도록 확장 */
+const M=[["cap","시가총액(조원)",[["소형 ≤10",0,10],["중형 10~50",10,50],["대형 50+",50,""]]],["per","PER(배)",[["저 ≤10",0,10],["보통 10~25",10,25],["고 25+",25,""]]],["pbr","PBR(배)",[["≤1",0,1],["1~3",1,3],["3+",3,""]]],["roe","ROE(%)",[["≥10",10,""],["≥20",20,""]]],["debt","부채비율(%)",[["≤50",0,50],["50~100",50,100],["100+",100,""]]],["div","배당수익률(%)",[["≥2",2,""],["≥4",4,""]]],["g","매출성장(%)",[["≥10",10,""],["≥20",20,""],["역성장 <0","",0]]],["vol","연변동성(%)",[["저 ≤25",0,25],["중 25~40",25,40],["고 40+",40,""]]],["m6","6개월 수익률(%)",[["≥10",10,""],["≤-10","",-10]]]];
+const CATS=["반도체","IT·플랫폼","자동차","바이오","2차전지","금융","에너지·소재","조선·산업","유통·소비","기타"];
+function catOf(s){const t=s.sec||"";return /반도체/.test(t)?"반도체":/2차전지/.test(t)?"2차전지":/자동차/.test(t)?"자동차":/바이오/.test(t)?"바이오":/금융/.test(t)?"금융":/IT|소프트|인터넷|플랫폼|결제|이커머스|AI/.test(t)?"IT·플랫폼":/에너지|철강|화학|소재/.test(t)?"에너지·소재":/조선|기계|건설/.test(t)?"조선·산업":/유통|소비|식품|화장품/.test(t)?"유통·소비":"기타"}
+const LYW={G:s=>`매출성장 ${s.g}% (기준 ≥20%)`,R:s=>(s.per<0?"적자(PER 산출불가)":`6개월 ${s.m6}%·매출 ${s.g}%`)+" (기준: 적자 또는 급락+역성장)",C:s=>`업종 ${s.sec}`,S:s=>`배당 ${s.div}%·성장 ${s.g}% (기준 배당≥2.5%, 성장<10%)`,A:s=>`PBR ${s.pbr}배 (기준 <1)`,L:s=>"대형주(시가총액 상위)"};
+function LYB(s){const a=lyOf(s);return `<div style="margin:6px 0">${a.map(x=>`<span class="tag" style="font-size:12px;padding:2px 10px">${LYN[x]}</span>`).join("")}<span class="tag" style="font-size:12px;padding:2px 10px;background:var(--pn2);color:var(--mu)">${catOf(s)}</span></div><div class="note">${a.length?a.map(x=>LYN[x]+": "+LYW[x](s)).join(" · "):"종목 특성: 기업 정보가 없어 판정할 수 없습니다 (수기 입력 또는 서버 연동 필요)"}</div>`}
+let fLy=new Set,fCat=new Set,fTech=new Set;
+function capN(s){const m=/([\d.]+)조(원|달러)/.exec(s.cap||"");return m?+m[1]*(m[2]==="달러"?1370:1):null}
+function val(s,k){if(s.lite)return null;if(k==="cap")return capN(s);if(k==="per")return s.per>0?s.per:null;const v=s[k];return v==null?null:v}
+function go(k){["dash","nav","tech"].forEach(i=>$(i).classList.toggle("hid",i!==k));document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x.dataset.t===k));scrollTo(0,0)}
+function buildNav(){$("nf").innerHTML=`<h3>🧭 검색 기준 <button class="btn" id="nrs" style="float:right;padding:2px 10px">초기화</button></h3><p class="note">입력·선택한 항목만 조건으로 적용됩니다. 비워 둔 항목은 무시됩니다.</p><h3>재무·밸류에이션 (구간 입력 / 프리셋)</h3>${M.map(m=>`<div class="mb"><div class="rr"><span>${m[1]}</span><input id="n_${m[0]}_a" type="number" step="any" placeholder="최소"><span>~</span><input id="n_${m[0]}_b" type="number" step="any" placeholder="최대"></div><div>${m[2].map(p=>`<span class="chip sm" data-p="${m[0]}|${p[1]}|${p[2]}">${p[0]}</span>`).join("")}</div></div>`).join("")}<h3>종목 특성 (복수 선택 시 하나라도 해당)</h3>${Object.keys(LYN).map(k=>`<span class="chip" data-f="ly" data-v="${k}">${LYN[k]}</span>`).join("")}<h3>사업 카테고리</h3>${CATS.map(c=>`<span class="chip" data-f="cat" data-v="${c}">${c}</span>`).join("")}<h3>트레이딩 기법 (종목별 적합 TOP6 기준)</h3>${[1,2,3,4,5].map(g=>`<details ${g===1?"open":""}><summary class="note">${GN[g]}</summary>${T.map((t,i)=>t[1]==g?`<span class="chip sm" data-f="tech" data-v="${i}">${String(i+1).padStart(2,"0")} ${esc(t[0])}</span>`:"").join("")}</details>`).join("")}`}
+function runNav(){const rr=[];M.forEach(m=>{const a=$("n_"+m[0]+"_a").value,b=$("n_"+m[0]+"_b").value;if(a!==""||b!=="")rr.push([m[0],a===""?-1e9:+a,b===""?1e9:+b])});const dataF=rr.length||fLy.size||fTech.size;
+let r=STK.map((x,i)=>({s:x,i})).filter(o=>{const x=o.s;if(x.lite&&dataF)return false;for(const [k,a,b] of rr){const v=val(x,k);if(v==null||v<a||v>b)return false}
+if(fLy.size&&![...fLy].some(y=>lyOf(x).includes(y)))return false;if(fCat.size&&!fCat.has(catOf(x)))return false;
+if(fTech.size){const ids=techMatch(x).map(m=>m.i);o.mt=[...fTech].filter(i=>ids.includes(i));if(!o.mt.length)return false}return true});
+const sk=$("ns").value;if(sk){const d=sk==="per"?1:-1;r.sort((a,b)=>{const x=val(a.s,sk),y=val(b.s,sk);if(x==null)return 1;if(y==null)return -1;return(x-y)*d})}
+$("nc").textContent=r.length+"건";const f=v=>v==null?"-":v;
+$("nt").innerHTML=`<tr><th>종목</th><th>특성</th><th>카테고리</th><th>시가총액</th><th>PER</th><th>PBR</th><th>ROE%</th><th>성장%</th><th>변동성%</th>${fTech.size?"<th>매칭 기법</th>":""}<th></th></tr>`+(r.map(o=>{const x=o.s;return `<tr data-go="${o.i}"><td><b>${esc(x.n)}</b><br><small class="note">${esc(x.s)} · ${esc(x.m)}</small></td><td>${lyOf(x).map(y=>`<span class="tag">${LYN[y]}</span>`).join("")||"-"}</td><td>${catOf(x)}</td><td>${esc(x.cap||"-")}</td><td>${f(val(x,"per"))}</td><td>${f(val(x,"pbr"))}</td><td>${f(val(x,"roe"))}</td><td>${f(val(x,"g"))}</td><td>${f(val(x,"vol"))}</td>${fTech.size?`<td style="white-space:normal">${(o.mt||[]).map(i=>`<span class="tag">${esc(T[i][0])}</span>`).join("")}</td>`:""}<td>${WL.includes(x.s)?"✔":`<button class="btn" data-nadd="${o.i}" title="관심종목 추가">＋</button>`}</td></tr>`}).join("")||'<tr><td colspan="11" class="note">조건에 맞는 종목이 없습니다. 조건을 완화해 보세요.</td></tr>')}
+document.addEventListener("click",e=>{const n=e.target.closest("[data-nadd]");if(n){const x=STK[+n.dataset.nadd];if(!WL.includes(x.s)){WL.push(x.s);saveWL();list()}runNav();return}
+const g=e.target.closest("[data-go]");if(g){cur=STK[+g.dataset.go];go("dash");list();render();return}
+const c=e.target.closest("[data-f]");if(c){const st=c.dataset.f==="ly"?fLy:c.dataset.f==="cat"?fCat:fTech,v=c.dataset.f==="tech"?+c.dataset.v:c.dataset.v;st.has(v)?st.delete(v):st.add(v);c.classList.toggle("on");runNav();return}
+const p=e.target.closest("[data-p]");if(p){const[k,a,b]=p.dataset.p.split("|");$("n_"+k+"_a").value=a;$("n_"+k+"_b").value=b;runNav();return}
+if(e.target.id==="nrs"){fLy.clear();fCat.clear();fTech.clear();document.querySelectorAll("#nf input").forEach(i=>i.value="");document.querySelectorAll("#nf .chip.on").forEach(i=>i.classList.remove("on"));runNav()}});
+buildNav();$("nf").addEventListener("input",runNav);$("ns").onchange=runNav;runNav();list();render();techs();
+
+</script></body></html>
