@@ -1,6 +1,6 @@
 """BALANCE FIFTY 데이터 수집: tickers.json 의 종목을 받아 data/stocks.json 생성.
 시세·재무: yfinance(비공식, 무료) / 한국 공시·재무: DART OpenAPI(무료 키)"""
-import json, os, sys, time, math, io, zipfile, datetime
+import json, os, sys, time, math, io, re, zipfile, datetime
 import xml.etree.ElementTree as ET
 import requests
 import yfinance as yf
@@ -51,7 +51,7 @@ def one_stock(it):
     dy = info.get("trailingAnnualDividendYield")
     g = info.get("revenueGrowth")
     px = st["px"] if it["m"] == "US" else round(st["px"])
-    return {"s": it["s"], "n": it["n"], "m": it["m"], "sec": it["sec"], "px": px,
+    return {"s": it["s"], "n": it["n"], "m": it["m"], "sec": it.get("sec") or info.get("sector") or "-", "px": px,
             "c": num(st["c"]), "cap": cap, "L": 1 if capkrw >= 30 else 0, "per": per,
             "pbr": num(info.get("priceToBook")), "roe": roe, "debt": num(info.get("debtToEquity")),
             "div": num((dy or 0) * 100), "g": num(g * 100) if g is not None else None,
@@ -68,8 +68,40 @@ def dart_corp_map():
     for e in root.iter("list"):
         sc = (e.findtext("stock_code") or "").strip()
         if sc:
-            m[sc] = e.findtext("corp_code")
+            m[sc] = (e.findtext("corp_code"), (e.findtext("corp_name") or "").strip())
     return m
+
+NASDAQ_URL = "https://www.nasdaqtrader.com/dynamic/SymDir/nasdaqlisted.txt"
+OTHER_URL = "https://www.nasdaqtrader.com/dynamic/SymDir/otherlisted.txt"
+BAD = re.compile(r"Warrant|\bRights?\b|\bUnits?\b|Preferred|Notes|Debenture|Acquisition|Depositary Shares|Subordinated", re.I)
+
+def us_universe():
+    out = []
+    for url, ei, ti in ((NASDAQ_URL, 6, 3), (OTHER_URL, 4, 6)):
+        for ln in requests.get(url, timeout=60).text.splitlines()[1:]:
+            c = ln.split("|")
+            if len(c) <= max(ei, ti) or ln.startswith("File Creation"):
+                continue
+            sym = c[0].strip()
+            if c[ei] == "Y" or c[ti] == "Y" or not sym or "$" in sym or BAD.search(c[1]):
+                continue
+            out.append([sym, c[1].split(" - ")[0].strip(), "US"])
+    return out
+
+def write_universe(cmap):
+    u = []
+    try:
+        u += us_universe()
+    except Exception as e:
+        print("US universe fail:", e)
+    u += [[code, v[1], "KR"] for code, v in cmap.items()]
+    if len(u) < 100:
+        print("universe too small, skip"); return
+    u.sort(key=lambda x: (x[2], x[0]))
+    path = os.path.join(HERE, "..", "data", "universe.json")
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    json.dump({"n": len(u), "u": u}, open(path, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+    print("universe saved", len(u))
 
 def dart_filings(corp):
     today = datetime.date.today()
@@ -126,13 +158,27 @@ def main():
             print("DART corp map fail:", e)
     else:
         print("DART_API_KEY 없음 - 한국 공시/재무 보강을 건너뜁니다")
+    write_universe(cmap)
     stocks = []
     for it in items:
         try:
-            s = one_stock(it)
+            if it.get("y"):
+                cands = [it["y"]]
+            elif it["m"] == "KR":
+                cands = [it["s"] + ".KS", it["s"] + ".KQ"]
+            else:
+                cands = [it["s"].replace(".", "-")]
+            s = None
+            for y in cands:
+                try:
+                    s = one_stock(dict(it, y=y))
+                except Exception as e:
+                    print("try fail", y, e)
+                if s:
+                    break
             if not s:
                 print("no price:", it["s"]); continue
-            corp = cmap.get(it["s"]) if it["m"] == "KR" else None
+            corp = cmap.get(it["s"], (None,))[0] if it["m"] == "KR" else None
             if corp:
                 try:
                     titles, ev = dart_filings(corp)
