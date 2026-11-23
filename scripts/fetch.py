@@ -25,7 +25,7 @@ def hist_stats(t):
     px, prev = float(h.iloc[-1]), float(h.iloc[-2])
     base = float(h.iloc[-126]) if len(h) > 126 else float(h.iloc[0])
     vol = float(h.pct_change().dropna().std()) * math.sqrt(252) * 100
-    return dict(px=px, c=(px / prev - 1) * 100, m6=(px / base - 1) * 100, vol=vol)
+    return dict(px=px, c=(px / prev - 1) * 100, m6=(px / base - 1) * 100, vol=vol, h=[float(x) for x in h.iloc[-250:]])
 
 def cap_text(cap, cur):
     if not cap:
@@ -56,7 +56,8 @@ def one_stock(it):
             "pbr": num(info.get("priceToBook")), "roe": roe, "debt": num(info.get("debtToEquity")),
             "div": num((dy or 0) * 100), "g": num(g * 100) if g is not None else None,
             "vol": num(st["vol"], 1), "m6": num(st["m6"], 1), "ev": 0,
-            "ov": (info.get("longBusinessSummary") or "")[:300]}
+            "ov": (info.get("longBusinessSummary") or "")[:300],
+            "h": [round(x) if it["m"] == "KR" else round(x, 2) for x in st["h"]]}
 
 # ---------- DART ----------
 def dart_corp_map():
