@@ -170,7 +170,7 @@ let WL=STK.map(x=>x.s);try{const w=JSON.parse(localStorage.getItem("ae_wl")||"nu
 function saveWL(){try{localStorage.setItem("ae_wl",JSON.stringify(WL))}catch(e){}}
 const LITE="네이버|035420|KR|IT 플랫폼;카카오|035720|KR|IT 플랫폼;LG에너지솔루션|373220|KR|2차전지;셀트리온|068270|KR|바이오;삼성바이오로직스|207940|KR|바이오;POSCO홀딩스|005490|KR|철강;기아|000270|KR|자동차;한미반도체|042700|KR|반도체 장비;KB금융|105560|KR|금융;HD현대중공업|329180|KR|조선;Microsoft|MSFT|US|소프트웨어;Alphabet|GOOGL|US|인터넷;Amazon|AMZN|US|이커머스;Meta|META|US|인터넷;Tesla|TSLA|US|자동차;Broadcom|AVGO|US|반도체;Costco|COST|US|유통;Palantir|PLTR|US|소프트웨어;Visa|V|US|결제;Exxon Mobil|XOM|US|에너지;JPMorgan|JPM|US|금융".split(";").map(x=>{const[a,b,c,d]=x.split("|");return{s:b,n:a,m:c,sec:d,px:0,c:0,cap:"-",L:0,per:0,g:0,vol:0,m6:0,div:0,ov:"기업 정보 미연동 — 서버 연결 후 자동 채움 또는 수기 입력",rk:[],lite:1}}).filter(x=>!STK.some(y=>y.s===x.s));
 STK=STK.concat(LITE);let cur=STK[0],rg=66;
-$("tk").innerHTML=[...IDX,...IDX].map(i=>`<span><b>${i[0]}</b>${i[1]} <em class="${i[2]>=0?"up":"dn"}" style="font-style:normal">${i[2]>=0?"▲":"▼"}${Math.abs(i[2])}%</em></span>`).join("");
+function drawTk(){$("tk").innerHTML=[...IDX,...IDX].map(i=>`<span><b>${i[0]}</b>${i[1]} <em class="${i[2]>=0?"up":"dn"}" style="font-style:normal">${i[2]>=0?"▲":"▼"}${Math.abs(i[2])}%</em></span>`).join("")}drawTk();
 function tagsOf(s){const t=[];if(s.per>0&&s.per<13)t.push("v");if(s.g>=15)t.push("g");if(s.vol>=35)t.push("o");if(s.m6>=10)t.push("t");if(s.div>=2.5)t.push("d");t.push(s.L?"L":"S");if(s.ev)t.push("e");if(s.roe>=12)t.push("q");if(s.m6<10&&s.vol<35)t.push("r");return t}
 function series(s,n){let h=0;for(const ch of s.s)h=(h*31+ch.charCodeAt(0))>>>0;const r=()=>(h=(h*1664525+1013904223)>>>0)/4294967296;const dv=s.vol/100/16,mu=s.m6/100/125;let p=[100];for(let i=1;i<n;i++)p.push(p[i-1]*(1+mu+(r()-.5)*2*dv));const k=s.px/p[n-1];return p.map(v=>v*k)}
 function chart(s){if(!s.px)return '<p class="note" style="padding:70px 0;text-align:center">시세 미연동 종목 — 서버 연결 후 차트가 표시됩니다.</p>';const p=series(s,rg),W=600,H=200,mn=Math.min(...p),mx=Math.max(...p),X=i=>i/(p.length-1)*W,Y=v=>H-10-(v-mn)/(mx-mn||1)*(H-20);const d=p.map((v,i)=>(i?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1)).join("");const up=p[p.length-1]>=p[0];const col=up?"var(--up)":"var(--dn)";return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".35"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs><path d="${d}L${W} ${H}L0 ${H}Z" fill="url(#g)"/><path d="${d}" fill="none" stroke="${col}" stroke-width="2"/></svg>`}
@@ -217,5 +217,10 @@ const c=e.target.closest("[data-f]");if(c){const st=c.dataset.f==="ly"?fLy:c.dat
 const p=e.target.closest("[data-p]");if(p){const[k,a,b]=p.dataset.p.split("|");$("n_"+k+"_a").value=a;$("n_"+k+"_b").value=b;runNav();return}
 if(e.target.id==="nrs"){fLy.clear();fCat.clear();fTech.clear();document.querySelectorAll("#nf input").forEach(i=>i.value="");document.querySelectorAll("#nf .chip.on").forEach(i=>i.classList.remove("on"));runNav()}});
 buildNav();$("nf").addEventListener("input",runNav);$("ns").onchange=runNav;runNav();list();render();techs();
+async function loadData(){try{const r=await fetch("data/stocks.json?t="+Date.now());if(!r.ok)throw 0;const d=await r.json();
+if((d.indices||[]).length){IDX.length=0;IDX.push(...d.indices);drawTk()}
+(d.stocks||[]).forEach(n=>{const o=STK.find(x=>x.s===n.s);if(o){Object.keys(n).forEach(k=>{const v=n[k];if(v!==null&&v!==""&&!(Array.isArray(v)&&!v.length))o[k]=v});delete o.lite}else{STK.push(n)}});
+$("src").textContent="LIVE · 갱신 "+(d.updated?new Date(d.updated).toLocaleString("ko-KR"):"");list();render();runNav()}catch(e){}}
+loadData();
 
 </script></body></html>
